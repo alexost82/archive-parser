@@ -12,7 +12,7 @@ def list_all_nested_files(path_to_archive, prefix=''):
             fd, nested_file_path = tempfile.mkstemp()
             os.write(fd, t.extractfile(i).read())
             if zipfile.is_zipfile(nested_file_path) or tarfile.is_tarfile(nested_file_path):
-                new_list = list_all_nested_files(nested_file_path, prefix+i+'/')
+                new_list = list_all_nested_files(nested_file_path, prefix+i+"/")
                 nested_files_list.extend(new_list)
             os.close(fd)
     #processing zip
@@ -23,7 +23,7 @@ def list_all_nested_files(path_to_archive, prefix=''):
             fd, nested_file_path = tempfile.mkstemp()
             os.write(fd, z.read(i))
             if zipfile.is_zipfile(nested_file_path) or tarfile.is_tarfile(nested_file_path):
-                new_list = list_all_nested_files(nested_file_path, prefix+i+'/')
+                new_list = list_all_nested_files(nested_file_path, prefix+i+"/")
                 nested_files_list.extend(new_list)
             os.close(fd)
     else:

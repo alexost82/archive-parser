@@ -19,7 +19,7 @@ def list_all_nested_files(path_to_archive, prefix=''):
     elif zipfile.is_zipfile(path_to_archive):
         z = zipfile.ZipFile(path_to_archive)
         for i in z.namelist():
-            nested_files_list.append(prefix+i)
+            nested_files_list.append(prefix+i.rstrip("/"))
             fd, nested_file_path = tempfile.mkstemp()
             os.write(fd, z.read(i))
             if zipfile.is_zipfile(nested_file_path) or tarfile.is_tarfile(nested_file_path):
@@ -30,3 +30,9 @@ def list_all_nested_files(path_to_archive, prefix=''):
         print('{} is not an accepted archive file'.format(path_to_archive))
 
     return nested_files_list
+
+    
+if __name__ == '__main__':
+    for i in sorted(list_all_nested_files('dir.zip')):
+        print i
+    

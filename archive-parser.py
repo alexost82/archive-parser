@@ -31,10 +31,10 @@ def list_all_nested_files(path_to_archive, prefix=''):
     else:
         print('{} is not an accepted archive file'.format(path_to_archive))
 
-    return nested_files_list
+    return sorted(nested_files_list)
 
     
 if __name__ == '__main__':
-    for i in sorted(list_all_nested_files(sys.argv[1])):
+    for i in list_all_nested_files(sys.argv[1]):
         print i
     

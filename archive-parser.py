@@ -1,6 +1,8 @@
-import StringIO, zipfile, tarfile, os, tempfile
+import zipfile, tarfile, os, tempfile, sys
 
 def list_all_nested_files(path_to_archive, prefix=''):
+    if prefix == '':
+        prefix = path_to_archive+"/"
     nested_files_list = []
     #processing tar
     if tarfile.is_tarfile(path_to_archive):
@@ -33,6 +35,6 @@ def list_all_nested_files(path_to_archive, prefix=''):
 
     
 if __name__ == '__main__':
-    for i in sorted(list_all_nested_files('dir.zip')):
+    for i in sorted(list_all_nested_files(sys.argv[1])):
         print i
     

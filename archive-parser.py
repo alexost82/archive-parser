@@ -1,10 +1,13 @@
 import zipfile, tarfile, os, sys, tempfile
 
+zips = []
+tars = []
 
 def list_all_nested_files(path_to_target, prefix=''):
     
     def tar_processing(path_to_tar):
         print "TAR processed", path_to_tar
+        tars.append(path_to_target)
         t = tarfile.open(path_to_tar)
         for i in t.getnames():
             if t.getmember(i).isdir():
@@ -17,9 +20,11 @@ def list_all_nested_files(path_to_target, prefix=''):
                 new_list = list_all_nested_files(nested_file_path, prefix+i+"/")
                 nested_files_list.extend(new_list)
             os.close(fd)
+        t.close()
 
     def zip_processing(path_to_zip):
         print 'ZIP processed', path_to_target
+        zips.append(path_to_target)
         z = zipfile.ZipFile(path_to_target)
         for i in z.namelist():
             nested_files_list.append(prefix+i)
@@ -29,10 +34,12 @@ def list_all_nested_files(path_to_target, prefix=''):
                 new_list = list_all_nested_files(nested_file_path, prefix+i+"/")
                 nested_files_list.extend(new_list)
             os.close(fd)
+        z.close()
 
     path_to_target = path_to_target.rstrip("/")
     if prefix == '': prefix = path_to_target+"/"
     nested_files_list = []
+
     print prefix, path_to_target, 'starting'
     #processing folder
     if os.path.isdir(path_to_target):
@@ -58,12 +65,15 @@ def list_all_nested_files(path_to_target, prefix=''):
     elif zipfile.is_zipfile(path_to_target): zip_processing(path_to_target)
     
     else:
-        print('{} is not an acceptable archive file or folder'.format(path_to_target))
-
+        print('{} is not an archive or a folder'.format(path_to_target))
+    
     return sorted(nested_files_list)
-
     
 if __name__ == '__main__':
     for i in list_all_nested_files(sys.argv[1]):
         print i
     
+    print len(zips), 'zips detected'
+    print len(tars), 'tars detected'
+
+        

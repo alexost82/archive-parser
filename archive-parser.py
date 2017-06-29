@@ -6,7 +6,7 @@ tars = []
 def list_all_nested_files(path_to_target, prefix=''):
     
     def tar_processing(path_to_tar):
-        print "TAR processed", path_to_tar
+        print " TAR processing... \n"#, path_to_tar
         tars.append(path_to_target)
         t = tarfile.open(path_to_tar)
         for i in t.getnames():
@@ -23,7 +23,7 @@ def list_all_nested_files(path_to_target, prefix=''):
         t.close()
 
     def zip_processing(path_to_zip):
-        print 'ZIP processed', path_to_target
+        print ' ZIP processing... \n'#, path_to_target
         zips.append(path_to_target)
         z = zipfile.ZipFile(path_to_target)
         for i in z.namelist():
@@ -40,12 +40,12 @@ def list_all_nested_files(path_to_target, prefix=''):
     if prefix == '': prefix = path_to_target+"/"
     nested_files_list = []
 
-    print prefix, path_to_target, 'starting'
+    print 'parsing object: ', prefix
     #processing folder
     if os.path.isdir(path_to_target):
         for i in os.listdir(path_to_target):
             direct_path = path_to_target + "/" + i
-            print direct_path, 'direct'
+            #print direct_path, 'direct'
             nested_files_list.append(direct_path)
             if os.path.isdir(direct_path):
                 index = nested_files_list.index(direct_path)

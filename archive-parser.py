@@ -1,3 +1,8 @@
+# -*- coding: utf-8 -*-
+"""
+author: alexost82
+"""
+
 import zipfile, tarfile, os, sys, tempfile
 
 zips = []
@@ -15,11 +20,16 @@ def list_all_nested_files(path_to_target, prefix=''):
                 continue
             nested_files_list.append(prefix+i)
             fd, nested_file_path = tempfile.mkstemp()
-            os.write(fd, t.extractfile(i).read())
-            if zipfile.is_zipfile(nested_file_path) or tarfile.is_tarfile(nested_file_path):
-                new_list = list_all_nested_files(nested_file_path, prefix+i+"/")
-                nested_files_list.extend(new_list)
-            os.close(fd)
+            try:
+                os.write(fd, t.extractfile(i).read())
+                if zipfile.is_zipfile(nested_file_path) or tarfile.is_tarfile(nested_file_path):
+                    new_list = list_all_nested_files(nested_file_path, prefix+i+"/")
+                    nested_files_list.extend(new_list)
+                os.close(fd)
+            except AttributeError as err:
+                print('An exception happened: ' + str(err))
+            finally:
+                os.remove(nested_file_path)
         t.close()
 
     def zip_processing(path_to_zip):
@@ -34,13 +44,15 @@ def list_all_nested_files(path_to_target, prefix=''):
                 new_list = list_all_nested_files(nested_file_path, prefix+i+"/")
                 nested_files_list.extend(new_list)
             os.close(fd)
+            os.remove(nested_file_path)
         z.close()
 
     path_to_target = path_to_target.rstrip("/")
     if prefix == '': prefix = path_to_target+"/"
     nested_files_list = []
 
-    print 'parsing object: ', prefix
+    print 'Parsing object: ', prefix.rstrip("/")
+    print '--', path_to_target
     #processing folder
     if os.path.isdir(path_to_target):
         for i in os.listdir(path_to_target):
@@ -70,10 +82,14 @@ def list_all_nested_files(path_to_target, prefix=''):
     return sorted(nested_files_list)
     
 if __name__ == '__main__':
+    #print 'par', os.path.abspath(sys.argv[1])
     for i in list_all_nested_files(sys.argv[1]):
         print i
     
-    print len(zips), 'zips detected'
-    print len(tars), 'tars detected'
+    print "================"
+    print len(zips), 'zips detected:'
+    #print zips
+    print len(tars), 'tars detected:'
+    #print tars
 
         

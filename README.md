@@ -1,2 +1,2 @@
 # archive-parser
-parse archive file producing full path output
+parse archive file producing **full path output**
